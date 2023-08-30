@@ -213,7 +213,7 @@ contract ChildContract {
         parent.childSubscribed(contractState.index, address(this).balance);
     }
 
-    function addUsageData(uint8 data) external onlyParent {
+    function addUsageData(uint256 data) external onlyParent {
         require(!isContractTerminated(), "Contract is terminated");
         require(contractState.usageData.length < contractState.monitoringPeriod, "Data length exceeded");
         
