@@ -78,11 +78,11 @@ contract ParentContract {
         childContracts[index].subscribed = true;
     }
 
-    function getContractsAlive() external view returns (ChildContractInfo[] memory) {
+    function getAliveContractsByCustomerId(string memory _customerId) external view returns (ChildContractInfo[] memory) {
         uint256 aliveCount = 0;
 
         for (uint256 i = 0; i < childContracts.length; i++) {
-            if (!childContracts[i].terminated) {
+            if (!childContracts[i].terminated && compareStrings(childContracts[i].customerId, _customerId)) {
                 aliveCount++;
             }
         }
@@ -91,7 +91,7 @@ contract ParentContract {
         uint256 aliveIndex = 0;
 
         for (uint256 i = 0; i < childContracts.length; i++) {
-            if (!childContracts[i].terminated) {
+            if (!childContracts[i].terminated && compareStrings(childContracts[i].customerId, _customerId)) {
                 aliveContracts[aliveIndex] = childContracts[i];
                 aliveIndex++;
             }
@@ -100,11 +100,11 @@ contract ParentContract {
         return aliveContracts;
     }
 
-    function getContractsTerminated() external view returns (ChildContractInfo[] memory) {
+    function getTerminatedContractsByCustomerId(string memory _customerId) external view returns (ChildContractInfo[] memory) {
         uint256 terminatedCount = 0;
 
         for (uint256 i = 0; i < childContracts.length; i++) {
-            if (childContracts[i].terminated) {
+            if (childContracts[i].terminated && compareStrings(childContracts[i].customerId, _customerId)) {
                 terminatedCount++;
             }
         }
@@ -113,7 +113,7 @@ contract ParentContract {
         uint256 terminatedIndex = 0;
 
         for (uint256 i = 0; i < childContracts.length; i++) {
-            if (childContracts[i].terminated) {
+            if (childContracts[i].terminated && compareStrings(childContracts[i].customerId, _customerId)) {
                 terminatedContracts[terminatedIndex] = childContracts[i];
                 terminatedIndex++;
             }
@@ -122,30 +122,9 @@ contract ParentContract {
         return terminatedContracts;
     }
 
-    function uint256ToString(uint256 value) internal pure returns (string memory) {
-        // Convert the uint256 to a string and return
-        if (value == 0) {
-            return "0";
-        }
-
-        uint256 temp = value;
-        uint256 digits;
-
-        while (temp != 0) {
-            digits++;
-            temp /= 10;
-        }
-
-        bytes memory buffer = new bytes(digits);
-        while (value != 0) {
-            digits -= 1;
-            buffer[digits] = bytes1(uint8(48 + uint8(value % 10)));
-            value /= 10;
-        }
-
-        return string(buffer);
-    }
-
+    function compareStrings(string memory a, string memory b) private pure returns (bool) {
+    return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
+}
 }
 
 contract ChildContract {

@@ -276,10 +276,9 @@ const App = () => {
         const parentContractAddress = process.env.REACT_APP_PARENT_CONTRACT_ADDRESS;
         const parentContract = new ethers.Contract(parentContractAddress, parentContractABI, signer);
 
-        let contractsAlive = await parentContract.getContractsAlive();
-        const filteredContractsAlive = contractsAlive.filter(contract => contract.customerId === selectedItem.id);
-        console.log("Retrieved contractsAlive...", filteredContractsAlive);
-        setContractsAliveData(filteredContractsAlive); // Update contractsAliveData state with fetched data
+        let contractsAlive = await parentContract.getAliveContractsByCustomerId(selectedItem.id);
+        console.log("Retrieved contractsAlive...", contractsAlive);
+        setContractsAliveData(contractsAlive); // Update contractsAliveData state with fetched data
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -301,10 +300,9 @@ const App = () => {
         const parentContractAddress = process.env.REACT_APP_PARENT_CONTRACT_ADDRESS;
         const parentContract = new ethers.Contract(parentContractAddress, parentContractABI, signer);
 
-        let contractsTerminated = await parentContract.getContractsTerminated();
-        const filteredContractsTerminated = contractsTerminated.filter(contract => contract.customerId === selectedItem.id);
-        console.log("Retrieved contractsTerminated...", filteredContractsTerminated);
-        setContractsTerminatedData(filteredContractsTerminated); // Update contractsTerminatedData state with fetched data
+        let contractsTerminated = await parentContract.getTerminatedContractsByCustomerId(selectedItem.id);
+        console.log("Retrieved contractsTerminated...", contractsTerminated);
+        setContractsTerminatedData(contractsTerminated); // Update contractsTerminatedData state with fetched data
       } else {
         console.log("Ethereum object doesn't exist!");
       }
