@@ -195,8 +195,10 @@ contract ChildContract {
     function addUsageData(uint256 data) external onlyParent {
         require(!isContractTerminated(), "Contract is terminated");
         require(contractState.usageData.length < contractState.monitoringPeriod, "Data length exceeded");
+
+        uint256 threshold = contractState.allocatedVcpus * uint256(contractState.serviceAvailabilityAgreement);
         
-        if (contractState.allocatedVcpus * contractState.serviceAvailabilityAgreement > data * 100){
+        if (threshold > data * 100) {
             contractState.usageData.push(0);
         } else {
             contractState.usageData.push(1);
